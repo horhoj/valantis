@@ -1,22 +1,22 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Filter } from '~/api/products.types';
 
 const SLICE_NAME = 'settingsSlice';
 
 interface IS {
-  testParam: boolean;
+  filter: Filter;
 }
 
 const initialState: IS = {
-  testParam: true,
+  filter: { field: 'brand', value: '' },
 };
 
 const { reducer, actions } = createSlice({
   name: SLICE_NAME,
   initialState,
   reducers: {
-    testParamToggle: (state) => {
-      state.testParam = !state.testParam;
-    },
+    // setFilter: (state action: PayloadAction<{Filter}>) => {
+    // },
   },
 });
 
