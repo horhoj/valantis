@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Filter } from '~/api/products.types';
+import { DEFAULT_FILTER } from '~/config/filter.config';
+import { Filter } from '~/types/products.types';
 
 const SLICE_NAME = 'settingsSlice';
 
@@ -8,15 +9,16 @@ interface IS {
 }
 
 const initialState: IS = {
-  filter: { field: 'brand', value: '' },
+  filter: DEFAULT_FILTER,
 };
 
 const { reducer, actions } = createSlice({
   name: SLICE_NAME,
   initialState,
   reducers: {
-    // setFilter: (state action: PayloadAction<{Filter}>) => {
-    // },
+    setFilter: (state, action: PayloadAction<Filter>) => {
+      state.filter = action.payload;
+    },
   },
 });
 

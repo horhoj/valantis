@@ -1,4 +1,3 @@
-import { axiosInstance } from './apiTransport';
 import {
   CommonResponse,
   FetchProductViewResponseItem,
@@ -7,7 +6,8 @@ import {
   FilterProductsResponseItem,
   GetFilterValue,
   UniqueFieldValueItem,
-} from './products.types';
+} from '../types/products.types';
+import { axiosInstance } from './apiTransport';
 import { getUUID } from '~/utils/getUUID';
 
 export const filterProducts = async (filter: Filter) => {
@@ -70,11 +70,11 @@ export const fetchUniqueFieldValueList = async <T extends Filter['field']>(
     }
   });
 
-  const brandList: UniqueFieldValueItem<GetFilterValue<T>>[] = [];
+  const valueList: UniqueFieldValueItem<GetFilterValue<T>>[] = [];
   brandSet.forEach((el) => {
-    brandList.push({ id: getUUID(), value: el });
+    valueList.push({ id: getUUID(), value: el });
   });
-  brandList.sort((a, b) => {
+  valueList.sort((a, b) => {
     if (a.value < b.value) {
       return -1;
     }
@@ -85,5 +85,5 @@ export const fetchUniqueFieldValueList = async <T extends Filter['field']>(
     return 0;
   });
 
-  return brandList;
+  return valueList;
 };

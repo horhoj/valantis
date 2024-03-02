@@ -5,7 +5,7 @@ import {
   DEFAULT_HEADERS,
   REQUEST_ERROR_RETRY_COUNT,
   REQUEST_ERROR_RETRY_DELAY_MS,
-} from './const';
+} from '../config/api.config';
 import { delay } from '~/utils/delay';
 
 export const axiosInstance = axios.create({

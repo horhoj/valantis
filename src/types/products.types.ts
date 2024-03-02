@@ -34,3 +34,11 @@ export interface UniqueFieldValueItem<T> {
   id: string;
   value: T;
 }
+
+export type FilterValues = {
+  [K in Filter['field']]: FilterItem<K, GetFilterValue<K>>;
+};
+
+export type FilterOptionTitles = {
+  [K in Filter['field']]: string;
+};
