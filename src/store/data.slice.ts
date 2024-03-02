@@ -5,17 +5,34 @@ import {
   makeRequestExtraReducer,
   makeRequestStateProperty,
 } from './helpers';
-import { fetchUniqueFieldValueList } from '~/api/products.api';
-import { UniqueFieldValueItem } from '~/types/products.types';
+import {
+  fetchProductIdList,
+  fetchProductViewList,
+  fetchUniqueFieldValueList,
+  filterProductIdList,
+} from '~/api/products.api';
+import {
+  FetchProductViewResponseItem,
+  FetchProductsResponseItem,
+  Filter,
+  UniqueFieldValueItem,
+} from '~/types/products.types';
+import { FILTER_DEFAULT_VALUES } from '~/config/filter.config';
 
 const SLICE_NAME = 'data';
 
 interface IS {
-  fetchBrandList: RequestStateProperty<UniqueFieldValueItem<string>[]>;
+  fetchBrandListRequest: RequestStateProperty<UniqueFieldValueItem<string>[]>;
+  fetchProductIdListRequest: RequestStateProperty<FetchProductsResponseItem[]>;
+  fetchProductViewListRequest: RequestStateProperty<
+    FetchProductViewResponseItem[]
+  >;
 }
 
 const initialState: IS = {
-  fetchBrandList: makeRequestStateProperty(),
+  fetchBrandListRequest: makeRequestStateProperty(),
+  fetchProductIdListRequest: makeRequestStateProperty(),
+  fetchProductViewListRequest: makeRequestStateProperty(),
 };
 
 export const { actions, reducer } = createSlice({
@@ -26,7 +43,17 @@ export const { actions, reducer } = createSlice({
     makeRequestExtraReducer<RequestList<IS>>(
       builder,
       fetchBrandListThunk,
-      'fetchBrandList',
+      'fetchBrandListRequest',
+    );
+    makeRequestExtraReducer<RequestList<IS>>(
+      builder,
+      fetchProductIdListThunk,
+      'fetchProductIdListRequest',
+    );
+    makeRequestExtraReducer<RequestList<IS>>(
+      builder,
+      fetchProductViewListThunk,
+      'fetchProductViewListRequest',
     );
   },
 });
@@ -47,6 +74,59 @@ const fetchBrandListThunk = createAsyncThunk(
   },
 );
 
+const fetchProductIdListThunk = createAsyncThunk(
+  `${SLICE_NAME}/fetchProductIdListThunk`,
+  async (filter: Filter, store) => {
+    try {
+      const currentFilter: Filter = { ...filter };
+      if (currentFilter.field === 'product') {
+        currentFilter.value = currentFilter.value.trim();
+      }
+      const defaultValue = FILTER_DEFAULT_VALUES[currentFilter.field];
+      let res: FetchProductsResponseItem[] = [];
+      if (currentFilter.value === defaultValue.value) {
+        res = await fetchProductIdList();
+      } else {
+        res = await filterProductIdList(currentFilter);
+      }
+
+      return store.fulfillWithValue(res);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        return store.rejectWithValue(e.message);
+      }
+      return 'unknown error';
+    }
+  },
+);
+
+interface FetchProductViewListThunkPayload {
+  productIdList: FetchProductsResponseItem[];
+}
+
+const fetchProductViewListThunk = createAsyncThunk(
+  `${SLICE_NAME}/fetchProductViewListThunk`,
+  async ({ productIdList }: FetchProductViewListThunkPayload, store) => {
+    try {
+      const brandList = await fetchProductViewList(productIdList);
+
+      return store.fulfillWithValue(brandList);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        return store.rejectWithValue(e.message);
+      }
+      return 'unknown error';
+    }
+  },
+);
+
 export const dataReducer = reducer;
 
-export const dataSlice = { actions, thunks: { fetchBrandListThunk } } as const;
+export const dataSlice = {
+  actions,
+  thunks: {
+    fetchBrandListThunk,
+    fetchProductIdListThunk,
+    fetchProductViewListThunk,
+  },
+} as const;

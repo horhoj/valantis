@@ -1,0 +1,20 @@
+.ProductCard {
+  padding: 15px;
+  border: 1px solid #333;
+  flex-wrap: wrap;
+  display: flex;
+  gap: 15px
+}
+
+.paramWrapper {
+  display: flex;
+  gap: 5px;
+}
+
+.paramTitle {
+  font-weight: 500;
+}
+
+.paramValue {
+  
+}

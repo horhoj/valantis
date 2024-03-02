@@ -7,9 +7,11 @@
   align-items: flex-end;
   justify-content: center;
 
-  &>button {
-    padding: 5px 15px;
+  @media (max-width: 800px) {
+    flex-direction: column;
   }
+
+
 }
 
 .formField {
@@ -30,4 +32,13 @@
   }
 
 
+}
+
+.buttonsWrapper {
+  display: flex;
+  gap: 15px;
+}
+
+.button {
+  padding: 5px 15px;
 }

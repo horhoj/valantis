@@ -33,11 +33,11 @@ axiosInstance.interceptors.response.use(
       _retry: error.config._retry !== undefined ? error.config._retry + 1 : 1,
     };
 
-    if (originalConfig._retry < REQUEST_ERROR_RETRY_COUNT) {
-      console.log(`СЕРВЕР СЛИШКОМ МНОГО РАЗ ОТВЕТИЛ С ОШИБКОЙ!!!`, error);
-
+    if (originalConfig._retry <= REQUEST_ERROR_RETRY_COUNT) {
+      console.log(`ВОЗНИКЛА ОШИБКА, НО МЫ ПОПРОБУЕМ ЕЩЕ РАЗ!!!`, error);
       return axiosInstance.request(originalConfig);
     }
+    console.log(`СЕРВЕР СЛИШКОМ МНОГО РАЗ ОТВЕТИЛ С ОШИБКОЙ!!!`, error);
     throw error;
   },
 );

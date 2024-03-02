@@ -10,7 +10,7 @@ import {
 import { axiosInstance } from './apiTransport';
 import { getUUID } from '~/utils/getUUID';
 
-export const filterProducts = async (filter: Filter) => {
+export const filterProductIdList = async (filter: Filter) => {
   const data = {
     action: 'filter',
     params: { [filter.field]: filter.value },
@@ -26,7 +26,7 @@ export const filterProducts = async (filter: Filter) => {
   return res.data.result;
 };
 
-export const fetchProducts = async () => {
+export const fetchProductIdList = async () => {
   const data = {
     action: 'get_ids',
   };
@@ -52,7 +52,16 @@ export const fetchProductViewList = async (productIdList: string[]) => {
     },
   });
 
-  return res.data.result;
+  const result: FetchProductViewResponseItem[] = [];
+  const valueSet = new Set<FetchProductViewResponseItem['id']>();
+  res.data.result.forEach((el) => {
+    if (!valueSet.has(el.id)) {
+      valueSet.add(el.id);
+      result.push(el);
+    }
+  });
+
+  return result;
 };
 
 export const fetchUniqueFieldValueList = async <T extends Filter['field']>(
@@ -63,15 +72,15 @@ export const fetchUniqueFieldValueList = async <T extends Filter['field']>(
     data: { action: 'get_fields', params: { field } },
   });
 
-  const brandSet = new Set<GetFilterValue<T>>();
+  const valueSet = new Set<GetFilterValue<T>>();
   res.data.result.forEach((brand) => {
-    if (brand !== null && !brandSet.has(brand)) {
-      brandSet.add(brand);
+    if (brand !== null && !valueSet.has(brand)) {
+      valueSet.add(brand);
     }
   });
 
   const valueList: UniqueFieldValueItem<GetFilterValue<T>>[] = [];
-  brandSet.forEach((el) => {
+  valueSet.forEach((el) => {
     valueList.push({ id: getUUID(), value: el });
   });
   valueList.sort((a, b) => {

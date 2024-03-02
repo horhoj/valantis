@@ -15,8 +15,12 @@ export function FilterForm() {
     dispatch(dataSlice.thunks.fetchBrandListThunk());
   }, []);
 
+  useEffect(() => {
+    dispatch(dataSlice.thunks.fetchProductIdListThunk(filter));
+  }, [filter]);
+
   const fetchBrandListRequest = useAppSelector(
-    (state) => state.data.fetchBrandList,
+    (state) => state.data.fetchBrandListRequest,
   );
 
   const formik = useFormik<Filter>({
@@ -88,13 +92,22 @@ export function FilterForm() {
             <input {...formik.getFieldProps('value')} type={'number'} />
           </div>
         )}
-
-        <button type={'submit'} disabled={!formik.dirty}>
-          применить
-        </button>
-        <button type={'button'} onClick={handleReset}>
-          сбросить
-        </button>
+        <div className={styles.buttonsWrapper}>
+          <button
+            type={'submit'}
+            disabled={!formik.dirty}
+            className={styles.button}
+          >
+            применить
+          </button>
+          <button
+            type={'button'}
+            onClick={handleReset}
+            className={styles.button}
+          >
+            сбросить
+          </button>
+        </div>
       </form>
     )
   );

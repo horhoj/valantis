@@ -24,6 +24,10 @@
   }
 }
 
+button {
+  cursor: pointer;
 
-
-
+  &:disabled {
+    cursor: auto;
+  }
+}
