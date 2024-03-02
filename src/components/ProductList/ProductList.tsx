@@ -37,8 +37,13 @@ export function ProductList() {
     dispatch(settingsSlice.actions.setPage(page));
   };
 
+  if (productIdList?.length === 0) {
+    return <div className={styles.msg}>ничего не найдено</div>;
+  }
+
   return (
-    productIdList && (
+    productIdList &&
+    productIdList.length > 0 && (
       <div className={styles.ProductList}>
         <Pagination
           count={productIdList.length}
@@ -46,6 +51,10 @@ export function ProductList() {
           perPage={NUMBER_OF_PRODUCT_PER_PAGE}
           onPaginate={handlePaginate}
         />
+        {fetchProductViewListRequest.isLoading &&
+          fetchProductViewListRequest.data === null && (
+            <div className={styles.msg}>Идет загрузка...</div>
+          )}
         {fetchProductViewListRequest.data && (
           <div className={styles.productCardListWrapper}>
             {fetchProductViewListRequest.data.map((el) => (

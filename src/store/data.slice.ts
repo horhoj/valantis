@@ -5,6 +5,7 @@ import {
   makeRequestExtraReducer,
   makeRequestStateProperty,
 } from './helpers';
+import { RootState } from './types';
 import {
   fetchProductIdList,
   fetchProductViewList,
@@ -130,3 +131,13 @@ export const dataSlice = {
     fetchProductViewListThunk,
   },
 } as const;
+
+export const dataIsLoadingSelector = (state: RootState) =>
+  state.data.fetchBrandListRequest.isLoading ||
+  state.data.fetchBrandListRequest.isLoading ||
+  state.data.fetchProductViewListRequest.isLoading;
+
+export const dataIsErrorSelector = (state: RootState) =>
+  state.data.fetchBrandListRequest.error ||
+  state.data.fetchBrandListRequest.error ||
+  state.data.fetchProductViewListRequest.error;
