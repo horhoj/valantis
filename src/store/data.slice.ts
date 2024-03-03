@@ -16,6 +16,7 @@ import {
   FetchProductViewResponseItem,
   FetchProductsResponseItem,
   Filter,
+  GetFilterValue,
   UniqueFieldValueItem,
 } from '~/types/products.types';
 import { FILTER_DEFAULT_VALUES } from '~/config/filter.config';
@@ -134,10 +135,10 @@ export const dataSlice = {
 
 export const dataIsLoadingSelector = (state: RootState) =>
   state.data.fetchBrandListRequest.isLoading ||
-  state.data.fetchBrandListRequest.isLoading ||
+  state.data.fetchProductIdListRequest.isLoading ||
   state.data.fetchProductViewListRequest.isLoading;
 
 export const dataIsErrorSelector = (state: RootState) =>
   state.data.fetchBrandListRequest.error ||
-  state.data.fetchBrandListRequest.error ||
+  state.data.fetchProductIdListRequest.error ||
   state.data.fetchProductViewListRequest.error;
