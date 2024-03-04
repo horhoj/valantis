@@ -7,6 +7,12 @@ import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import { settingsSlice } from '~/store/settings.slice';
 import { dataSlice } from '~/store/data.slice';
 
+const getProductIdList = (productIdList: string[], currentPage: number) => {
+  const start = (currentPage - 1) * NUMBER_OF_PRODUCT_PER_PAGE;
+  const end = start + NUMBER_OF_PRODUCT_PER_PAGE - 1;
+  return productIdList.slice(start, end);
+};
+
 export function ProductList() {
   const dispatch = useAppDispatch();
   const productIdList = useAppSelector(
@@ -17,23 +23,28 @@ export function ProductList() {
 
   useEffect(() => {
     if (productIdList !== null) {
-      const start = (page - 1) * NUMBER_OF_PRODUCT_PER_PAGE;
-      const end = start + NUMBER_OF_PRODUCT_PER_PAGE - 1;
-      const currentProductIdList = productIdList.slice(start, end);
-
+      const currentProductIdList = getProductIdList(productIdList, 1);
       dispatch(
         dataSlice.thunks.fetchProductViewListThunk({
           productIdList: currentProductIdList,
         }),
       );
     }
-  }, [page, productIdList]);
+  }, [productIdList]);
 
   const fetchProductViewListRequest = useAppSelector(
     (state) => state.data.fetchProductViewListRequest,
   );
 
   const handlePaginate = (page: number) => {
+    if (productIdList !== null) {
+      const currentProductIdList = getProductIdList(productIdList, page);
+      dispatch(
+        dataSlice.thunks.fetchProductViewListThunk({
+          productIdList: currentProductIdList,
+        }),
+      );
+    }
     dispatch(settingsSlice.actions.setPage(page));
   };
 
